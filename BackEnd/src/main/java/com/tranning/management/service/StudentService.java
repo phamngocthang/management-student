@@ -6,12 +6,16 @@ import com.tranning.management.common.message.StatusMessage;
 import com.tranning.management.common.response.DataResponse;
 import com.tranning.management.common.response.ListResponse;
 import com.tranning.management.common.response.ResponseMapper;
+import com.tranning.management.dto.SearchByKeywordDto;
 import com.tranning.management.dto.StudentDto;
 import com.tranning.management.dto.UserDto;
 import com.tranning.management.mapper.StudentMapper;
 import com.tranning.management.model.Student;
 import com.tranning.management.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -63,5 +67,13 @@ public class StudentService {
                                 studentMapper.entityToDto(student))
                 .collect(Collectors.toList())
         );
+    }
+
+    public ListResponse<StudentDto> searchByKeyword(SearchByKeywordDto searchByKeywordDto) {
+        Pageable pageable = PageRequest.of(searchByKeywordDto.getPageIndex(), searchByKeywordDto.getPageSize());
+        String keyword = searchByKeywordDto.getKeyword();
+
+        Page<Student> students = studentRepository.searchByKeyword(keyword, pageable);
+        return ResponseMapper.toPagingResponseSuccess(students.map(student -> studentMapper.entityToDto(student)));
     }
 }

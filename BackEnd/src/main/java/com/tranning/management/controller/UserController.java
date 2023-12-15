@@ -5,6 +5,7 @@ import com.tranning.management.common.response.ListResponse;
 import com.tranning.management.common.utilities.ApiResources;
 import com.tranning.management.dto.ChangePasswordRequest;
 import com.tranning.management.dto.LoginRequest;
+import com.tranning.management.dto.SearchByKeywordDto;
 import com.tranning.management.dto.UserDto;
 import com.tranning.management.model.User;
 import com.tranning.management.service.UserSevice;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
     private final UserSevice userSevice;
     @GetMapping("login")
@@ -57,5 +59,10 @@ public class UserController {
     public DataResponse<UserDto> changePassword(@PathVariable("id") Integer id,
                                                 @RequestBody ChangePasswordRequest changePasswordRequest) {
         return userSevice.changePassword(id, changePasswordRequest);
+    }
+
+    @PostMapping(ApiResources.SEARCH_BY_KEYWORD)
+    public ListResponse<UserDto> searchByKeyword(@RequestBody SearchByKeywordDto searchByKeywordDto) {
+        return userSevice.searchByKeyword(searchByKeywordDto);
     }
 }

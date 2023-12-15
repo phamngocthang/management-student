@@ -9,12 +9,16 @@ import com.tranning.management.common.response.ListResponse;
 import com.tranning.management.common.response.ResponseMapper;
 import com.tranning.management.dto.ChangePasswordRequest;
 import com.tranning.management.dto.LoginRequest;
+import com.tranning.management.dto.SearchByKeywordDto;
 import com.tranning.management.dto.UserDto;
 import com.tranning.management.mapper.UserMapper;
 import com.tranning.management.model.User;
 import com.tranning.management.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -102,5 +106,13 @@ public class UserSevice {
         } else {
             throw new ResourceNotFoundException("User doesn't exists.");
         }
+    }
+
+    public ListResponse<UserDto> searchByKeyword(SearchByKeywordDto searchByKeywordDto) {
+        Pageable pageable = PageRequest.of(searchByKeywordDto.getPageIndex(), searchByKeywordDto.getPageSize());
+        String keyword = searchByKeywordDto.getKeyword();
+
+        Page<User> pageUser = userRepository.searchByKeyword(keyword, pageable);
+        return ResponseMapper.toPagingResponseSuccess(pageUser.map(user -> userMapper.entityToDto(user)));
     }
 }

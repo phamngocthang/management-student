@@ -3,6 +3,7 @@ package com.tranning.management.controller;
 import com.tranning.management.common.response.DataResponse;
 import com.tranning.management.common.response.ListResponse;
 import com.tranning.management.common.utilities.ApiResources;
+import com.tranning.management.dto.SearchByKeywordDto;
 import com.tranning.management.dto.StudentDto;
 import com.tranning.management.repository.StudentRepository;
 import com.tranning.management.service.StudentService;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/student")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class StudentController {
     private final StudentService studentService;
 
@@ -44,5 +46,10 @@ public class StudentController {
     @GetMapping(ApiResources.GET_ALL)
     public ListResponse<StudentDto> getAll() {
         return studentService.getAll();
+    }
+
+    @PostMapping(ApiResources.SEARCH_BY_KEYWORD)
+    public ListResponse<StudentDto> searchByKeyword(@RequestBody SearchByKeywordDto searchByKeywordDto) {
+        return studentService.searchByKeyword(searchByKeywordDto);
     }
 }
